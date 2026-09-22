@@ -1,0 +1,60 @@
+---
+import '@fontsource-variable/inter';
+import '../styles/global.css';
+import Fejlec from '../components/Fejlec.astro';
+import Lablec from '../components/Lablec.astro';
+import { site } from '../site.config';
+
+interface Props {
+  cim: string;
+  leiras?: string;
+  tipus?: 'website' | 'article';
+  jsonLd?: object;
+}
+
+const { cim, leiras = site.leiras, tipus = 'website', jsonLd } = Astro.props;
+const teljesCim = cim === site.nev ? `${site.nev} — ${site.alcim}` : `${cim} · ${site.nev}`;
+const kanonikus = new URL(Astro.url.pathname, Astro.site ?? site.url).href;
+---
+
+<!doctype html>
+<html lang="hu">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>{teljesCim}</title>
+    <meta name="description" content={leiras} />
+    <link rel="canonical" href={kanonikus} />
+    <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+    <link rel="sitemap" href="/sitemap-index.xml" />
+
+    <meta property="og:type" content={tipus} />
+    <meta property="og:title" content={teljesCim} />
+    <meta property="og:description" content={leiras} />
+    <meta property="og:url" content={kanonikus} />
+    <meta property="og:site_name" content={site.nev} />
+    <meta property="og:locale" content="hu_HU" />
+    <meta name="twitter:card" content="summary_large_image" />
+
+    {jsonLd && <script type="application/ld+json" set:html={JSON.stringify(jsonLd)} />}
+
+    <script is:inline>
+      // A mentett megjelenés beállítása MÉG a rajzolás előtt, hogy ne villanjon.
+      (function () {
+        try {
+          var t = localStorage.getItem('nullarol-tema');
+          if (t === 'sotet' || t === 'vilagos') document.documentElement.dataset.tema = t;
+        } catch (e) { /* privát böngészés: marad a rendszerbeállítás */ }
+      })();
+    </script>
+  </head>
+
+  <body>
+    <a class="atugras" href="#tartalom">Ugrás a tartalomra</a>
+    <Fejlec />
+    <main id="tartalom">
+      <slot />
+    </main>
+    <Lablec />
+  </body>
+</html>

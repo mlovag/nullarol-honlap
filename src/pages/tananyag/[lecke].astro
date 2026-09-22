@@ -1,0 +1,140 @@
+---
+import type { GetStaticPaths } from 'astro';
+import { getCollection, render } from 'astro:content';
+import Alap from '../../layouts/Alap.astro';
+import SzuloiKartya from '../../components/SzuloiKartya.astro';
+import { site, szemeszterek } from '../../site.config';
+
+export const getStaticPaths = (async () => {
+  const osszes = await getCollection('leckek');
+  const leckek = osszes
+    .filter((l) => l.data.statusz === 'megirva')
+    .sort((a, b) => a.data.kod.localeCompare(b.data.kod));
+
+  return leckek.map((lecke, i) => ({
+    params: { lecke: lecke.id },
+    props: { lecke, elozo: leckek[i - 1] ?? null, kovetkezo: leckek[i + 1] ?? null },
+  }));
+}) satisfies GetStaticPaths;
+
+const { lecke, elozo, kovetkezo } = Astro.props;
+const { Content } = await render(lecke);
+const d = lecke.data;
+const szemeszter = szemeszterek.find((sz) => sz.szam === d.szemeszter);
+
+const jsonLd = {
+  '@context': 'https://schema.org',
+  '@type': 'LearningResource',
+  name: d.cim,
+  description: d.kulcsuzenet,
+  inLanguage: 'hu',
+  educationalLevel: szemeszter?.korosztaly,
+  learningResourceType: 'Lecke',
+  timeRequired: `PT${d.hossz}M`,
+  isPartOf: { '@type': 'Course', name: `${d.szemeszter}. szemeszter — ${szemeszter?.cim}`, provider: { '@type': 'Organization', name: site.nev } },
+};
+---
+
+<Alap cim={d.cim} leiras={d.kulcsuzenet} tipus="article" jsonLd={jsonLd}>
+  <article class="burok szakasz">
+    <nav class="morzsa" aria-label="Hol vagyok">
+      <a href="/tananyag/">Tananyag</a>
+      <span aria-hidden="true">›</span>
+      <a href={`/tananyag/#szemeszter-${d.szemeszter}`}>{d.szemeszter}. szemeszter</a>
+      <span aria-hidden="true">›</span>
+      <span>{d.modulSorszam}. modul — {d.modul}</span>
+    </nav>
+
+    <div class="olvas">
+      <div style="display:flex; gap:.5rem; flex-wrap:wrap; margin-bottom:1rem">
+        <span class="cimke szam-jel">{d.kod}</span>
+        <span class="cimke">{d.hossz} perc</span>
+        {d.vitaLecke && <span class="cimke kiemelt">vita-lecke</span>}
+      </div>
+
+      <h1>{d.cim}</h1>
+
+      <p class="kulcsuzenet">{d.kulcsuzenet}</p>
+
+      {d.szuloiKartya && <SzuloiKartya adat={d.szuloiKartya} />}
+
+      <div class="szoveg">
+        <Content />
+      </div>
+
+      {d.fogalmak.length > 0 && (
+        <section style="margin-top:3rem">
+          <h2>Fogalomtár</h2>
+          <table>
+            <thead>
+              <tr><th>Magyarul</th><th>Angolul</th><th>Egy mondatban</th></tr>
+            </thead>
+            <tbody>
+              {d.fogalmak.map((f) => (
+                <tr><td><strong>{f.hu}</strong></td><td><em>{f.en}</em></td><td>{f.mit}</td></tr>
+              ))}
+            </tbody>
+          </table>
+        </section>
+      )}
+
+    </div>
+
+    <nav class="lecke-lepteto" aria-label="Léptetés a leckék között">
+      {elozo ? (
+        <a href={`/tananyag/${elozo.id}/`} class="kartya">
+          <span class="cimke">Előző lecke</span>
+          <h3 style="margin:.5rem 0 0; font-size:1.02rem">{elozo.data.cim}</h3>
+        </a>
+      ) : <span></span>}
+      {kovetkezo ? (
+        <a href={`/tananyag/${kovetkezo.id}/`} class="kartya" style="text-align:right">
+          <span class="cimke">Következő lecke</span>
+          <h3 style="margin:.5rem 0 0; font-size:1.02rem">{kovetkezo.data.cim}</h3>
+        </a>
+      ) : <span></span>}
+    </nav>
+  </article>
+</Alap>
+
+<style>
+  .morzsa {
+    display: flex; flex-wrap: wrap; gap: .45rem;
+    font-size: .88rem; color: var(--muted); margin-bottom: 1.8rem;
+  }
+  .morzsa a { color: var(--muted); }
+
+  .kulcsuzenet {
+    font-size: clamp(1.1rem, 1rem + .45vw, 1.28rem);
+    line-height: 1.55;
+    font-weight: 500;
+    padding: 1rem 0 1rem 1.2rem;
+    border-left: 3px solid var(--accent);
+    margin: 1.4rem 0 0;
+  }
+
+  .szoveg :global(h2) {
+    padding-top: 1.6rem;
+    border-top: 1px solid var(--border);
+  }
+  .szoveg :global(h2:first-of-type) { border-top: 0; padding-top: 0; }
+  .szoveg :global(h3) { color: var(--text); }
+  .szoveg :global(ol) { counter-reset: none; }
+
+  .megfigyeles {
+    margin-top: 2.6rem;
+    background: var(--accent-bg);
+    border-radius: var(--radius);
+    padding: 1.15rem 1.3rem;
+  }
+
+  .lecke-lepteto {
+    display: grid;
+    gap: 1rem;
+    grid-template-columns: 1fr;
+    margin-top: 3.5rem;
+  }
+  @media (min-width: 680px) {
+    .lecke-lepteto { grid-template-columns: 1fr 1fr; }
+  }
+</style>

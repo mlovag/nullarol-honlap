@@ -1,0 +1,98 @@
+---
+import { getCollection } from 'astro:content';
+import Alap from '../layouts/Alap.astro';
+import { site, szemeszterek } from '../site.config';
+
+const leckek = await getCollection('leckek');
+const kesz = leckek.filter((l) => l.data.statusz === 'megirva');
+const keszSzemeszterek = new Set(kesz.map((l) => l.data.szemeszter));
+
+const jsonLd = {
+  '@context': 'https://schema.org',
+  '@type': 'EducationalOrganization',
+  name: site.nev,
+  url: site.url,
+  description: site.leiras,
+  inLanguage: 'hu',
+};
+---
+
+<Alap cim={site.nev} jsonLd={jsonLd}>
+  <section class="burok szakasz">
+    <div class="olvas">
+      <span class="cimke kiemelt">Ingyenes tananyag</span>
+      <h1 style="margin-top:1rem">Közgazdaságtan és pénzügyek, tizenéveseknek</h1>
+      <p style="font-size:1.2rem; color:var(--muted); margin-bottom:2rem">
+        Öt szemeszter, leckéről leckére. Minden lecke harminc perc, elmondható prózában,
+        valós példákkal — számolási feladatok nélkül. Szülőknek, tanároknak és
+        tizenéveseknek, akik érteni akarják, hogyan működik a pénz és a gazdaság.
+      </p>
+      <p style="display:flex; gap:.7rem; flex-wrap:wrap">
+        <a href="/tananyag/" class="gomb elsodleges">Tananyag megnyitása</a>
+        <a href="/eloszo/" class="gomb">Miről szól ez?</a>
+      </p>
+    </div>
+  </section>
+
+  <section class="burok" style="padding-bottom:clamp(2.5rem,6vw,4.5rem)">
+    <h2 style="margin-top:0">A tanterv</h2>
+    <p style="color:var(--muted); max-width:60ch">
+      A sorrend nem véletlen: előbb a mikroökonómia, mert a szűkösség és az ár
+      megértése nélkül a GDP üres szó marad. A személyes pénzügyek 16–18 éves korban
+      jönnek — akkor, amikor élessé válnak.
+    </p>
+
+    <div class="racs" style="margin-top:1.6rem">
+      {szemeszterek.map((sz) => {
+        const db = kesz.filter((l) => l.data.szemeszter === sz.szam).length;
+        const elerheto = keszSzemeszterek.has(sz.szam);
+        return (
+          <a class="kartya" href={elerheto ? `/tananyag/#szemeszter-${sz.szam}` : '/tananyag/'}>
+            <div style="display:flex; justify-content:space-between; gap:.6rem; align-items:start">
+              <span class="cimke">{sz.szam}. szemeszter</span>
+              <span class="cimke" style={elerheto ? 'background:var(--accent-bg); color:var(--accent)' : ''}>
+                {elerheto ? `${db} lecke` : 'készül'}
+              </span>
+            </div>
+            <h3 style="margin-top:.7rem">{sz.cim}</h3>
+            <p>{sz.fokusz}</p>
+            <p style="margin-top:.5rem; font-size:.88rem">Ajánlott kor: {sz.korosztaly}</p>
+          </a>
+        );
+      })}
+    </div>
+  </section>
+
+  <section class="burok" style="padding-bottom:clamp(3rem,7vw,5rem)">
+    <div class="olvas">
+      <h2>Hogyan használd</h2>
+      <p>
+        Egy lecke egy fogalom. A <strong>Szülői kártya</strong> mondja meg, mi a lényeg,
+        mi a tipikus félreértés, és mit ne mondj — ezt érdemes elolvasni, mielőtt
+        belekezdesz. Utána a lecke szövege végigmondható úgy, ahogy le van írva:
+        horog, három gondolati blokk, valós eset, végül egy dilemma, aminek nincs
+        helyes válasza.
+      </p>
+      <p>
+        Heti két alkalom esetén egy szemeszter nagyjából tizennégy hét. Nem kell sietni,
+        és nem kell számonkérni: a cél, hogy a fogalmak a helyükre kerüljenek.
+      </p>
+    </div>
+  </section>
+</Alap>
+
+<style>
+  .gomb {
+    display: inline-block;
+    padding: .78rem 1.35rem;
+    border-radius: 11px;
+    border: 1px solid var(--border);
+    background: var(--surface);
+    color: var(--text);
+    text-decoration: none;
+    font-weight: 600;
+  }
+  .gomb:hover { border-color: var(--accent); }
+  .gomb.elsodleges { background: var(--accent); border-color: var(--accent); color: #111318; }
+  .gomb.elsodleges:hover { filter: brightness(1.07); }
+</style>

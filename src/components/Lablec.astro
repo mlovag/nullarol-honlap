@@ -1,0 +1,26 @@
+---
+import { site, menu } from '../site.config';
+const ev = new Date().getFullYear();
+---
+
+<footer class="lablec">
+  <div class="burok lablec-racs">
+    <div style="max-width: 46ch">
+      <strong style="color: var(--text)">{site.nev}</strong>
+      <p style="margin:.4rem 0 0">{site.leiras}</p>
+    </div>
+
+    <nav aria-label="Lábléc menü" style="display:flex; flex-direction:column; gap:.35rem">
+      {menu.map((m) => <a href={m.url}>{m.cim}</a>)}
+      {site.youtube && <a href={site.youtube} rel="noopener">YouTube</a>}
+      {site.email && <a href={`mailto:${site.email}`}>Kapcsolat</a>}
+    </nav>
+  </div>
+
+  <div class="burok" style="margin-top:1.8rem; padding-top:1.2rem; border-top:1px solid var(--border)">
+    <p style="margin:0; font-size:.86rem">
+      © {ev} {site.nev} · A tananyag szabadon használható tanulásra és tanításra.
+      Ez az oldal oktatási célú — nem befektetési tanácsadás.
+    </p>
+  </div>
+</footer>

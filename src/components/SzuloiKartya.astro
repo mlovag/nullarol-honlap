@@ -1,0 +1,95 @@
+---
+interface Props {
+  adat: {
+    mitViszHaza?: string;
+    elofeltetel?: string;
+    felreertes?: string;
+    amitNeMondj?: string;
+    aSzamokrol?: string;
+    amireKeszulj?: string;
+  };
+}
+const { adat } = Astro.props;
+
+
+/* A mezők szövege Markdown-jelöléseket tartalmazhat (**félkövér**, *dőlt*).
+   Itt alakítjuk át őket, HTML-escape után. */
+function jeloles(sz: string): string {
+  const e = sz
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;');
+  return e
+    .replace(/\*\*([^*]+?)\*\*/g, '<strong>$1</strong>')
+    .replace(/(^|[^*])\*([^*]+?)\*/g, '$1<em>$2</em>');
+}
+
+const sorok = [
+  { cimke: 'Mit visz haza',      ertek: adat.mitViszHaza },
+  { cimke: 'Előfeltétel',        ertek: adat.elofeltetel },
+  { cimke: 'Tipikus félreértés', ertek: adat.felreertes },
+  { cimke: 'Amit ne mondj',      ertek: adat.amitNeMondj },
+  { cimke: 'A számokról',        ertek: adat.aSzamokrol },
+  { cimke: 'Amire készülj',      ertek: adat.amireKeszulj },
+].filter((s) => s.ertek);
+---
+
+{sorok.length > 0 && (
+  <details class="szuloi-kartya" open>
+    <summary>
+      <span class="cimke kiemelt">Szülői kártya</span>
+      <span class="szuloi-alcim">Olvasd el, mielőtt elkezded</span>
+    </summary>
+    <dl>
+      {sorok.map((s) => (
+        <div class="szuloi-sor">
+          <dt>{s.cimke}</dt>
+          <dd set:html={jeloles(s.ertek!)} />
+        </div>
+      ))}
+    </dl>
+  </details>
+)}
+
+<style>
+  .szuloi-kartya {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-left: 3px solid var(--accent);
+    border-radius: var(--radius);
+    padding: 1.1rem 1.3rem;
+    margin: 2rem 0 2.5rem;
+  }
+  .szuloi-kartya summary {
+    cursor: pointer;
+    list-style: none;
+    display: flex;
+    align-items: center;
+    gap: .7rem;
+    flex-wrap: wrap;
+  }
+  .szuloi-kartya summary::-webkit-details-marker { display: none; }
+  .szuloi-alcim { color: var(--muted); font-size: .92rem; }
+  .szuloi-kartya summary::after {
+    content: '▾';
+    margin-left: auto;
+    color: var(--muted);
+    transition: transform .15s ease;
+  }
+  .szuloi-kartya[open] summary::after { transform: rotate(180deg); }
+  .szuloi-kartya dl { margin: 1.2rem 0 .2rem; }
+  .szuloi-sor { display: grid; gap: .1rem .9rem; padding: .7rem 0; border-top: 1px solid var(--border); }
+  .szuloi-sor:first-child { border-top: 0; padding-top: 0; }
+  .szuloi-kartya dt {
+    font-weight: 650;
+    font-size: .8rem;
+    letter-spacing: .05em;
+    text-transform: uppercase;
+    color: var(--muted);
+  }
+  .szuloi-kartya dd { margin: 0; }
+  @media (min-width: 720px) {
+    .szuloi-sor { grid-template-columns: 11rem 1fr; }
+    .szuloi-kartya dt { padding-top: .18rem; }
+  }
+</style>

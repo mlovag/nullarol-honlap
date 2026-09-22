@@ -1,0 +1,25 @@
+---
+import type { GetStaticPaths } from 'astro';
+import { getCollection, render } from 'astro:content';
+import Alap from '../layouts/Alap.astro';
+
+export const getStaticPaths = (async () => {
+  const oldalak = await getCollection('oldalak');
+  return oldalak.map((oldal) => ({ params: { oldal: oldal.id }, props: { oldal } }));
+}) satisfies GetStaticPaths;
+
+const { oldal } = Astro.props;
+const { Content } = await render(oldal);
+---
+
+<Alap cim={oldal.data.cim} leiras={oldal.data.leiras}>
+  <article class="burok szakasz">
+    <div class="olvas">
+      <h1>{oldal.data.cim}</h1>
+      {oldal.data.leiras && (
+        <p style="font-size:1.12rem; color:var(--muted)">{oldal.data.leiras}</p>
+      )}
+      <Content />
+    </div>
+  </article>
+</Alap>

@@ -1,0 +1,57 @@
+---
+import { site, menu } from '../site.config';
+const utvonal = Astro.url.pathname;
+const aktiv = (url: string) =>
+  url === '/' ? utvonal === '/' : utvonal.startsWith(url.replace(/\/$/, ''));
+---
+
+<header class="fejlec" id="fejlec">
+  <div class="burok fejlec-sor">
+    <a class="logo" href="/">
+      <span class="logo-jel" aria-hidden="true"></span>
+      <span>{site.nev}</span>
+    </a>
+
+    <nav class="fomenu" id="fomenu" aria-label="Főmenü">
+      {menu.map((m) => (
+        <a href={m.url} aria-current={aktiv(m.url) ? 'page' : undefined}>{m.cim}</a>
+      ))}
+    </nav>
+
+    <button class="ikon-gomb" id="tema-gomb" type="button"
+            aria-label="Világos és sötét megjelenés váltása">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+           stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+        <circle cx="12" cy="12" r="4"></circle>
+        <path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"></path>
+      </svg>
+    </button>
+
+    <button class="ikon-gomb menu-gomb" id="menu-gomb" type="button"
+            aria-label="Menü" aria-expanded="false" aria-controls="fomenu">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+           stroke-linecap="round" aria-hidden="true">
+        <path d="M3 6h18M3 12h18M3 18h18"></path>
+      </svg>
+    </button>
+  </div>
+</header>
+
+<script>
+  const fejlec = document.getElementById('fejlec');
+  const menuGomb = document.getElementById('menu-gomb');
+  menuGomb?.addEventListener('click', () => {
+    const nyitva = fejlec?.classList.toggle('nyitva');
+    menuGomb.setAttribute('aria-expanded', nyitva ? 'true' : 'false');
+  });
+
+  const temaGomb = document.getElementById('tema-gomb');
+  temaGomb?.addEventListener('click', () => {
+    const rendszerSotet = window.matchMedia('(prefers-color-scheme: dark)').matches;
+    const mostani =
+      document.documentElement.dataset.tema || (rendszerSotet ? 'sotet' : 'vilagos');
+    const uj = mostani === 'sotet' ? 'vilagos' : 'sotet';
+    document.documentElement.dataset.tema = uj;
+    try { localStorage.setItem('nullarol-tema', uj); } catch (e) { /* privát mód */ }
+  });
+</script>
