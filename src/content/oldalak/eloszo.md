@@ -20,4 +20,5 @@ Az oldal teljesen ingyenes. Ha tetszik, egyet kérek: mutasd meg valakinek, akin
 A célom egyszerű: hogy a mai középiskolások kicsit jobban értsenek a pénzhez, mint mi értettünk az ő korukban. Itthon ezen van mit javítani.
 
 Jó tanulást!
+
 *Norbert*
