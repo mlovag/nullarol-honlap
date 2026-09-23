@@ -1,0 +1,146 @@
+---
+/* Egy szemeszter saját oldala: /tananyag/1-szemeszter/ … /tananyag/5-szemeszter/ */
+import type { GetStaticPaths } from 'astro';
+import Alap from '../../layouts/Alap.astro';
+import { site } from '../../site.config';
+import { szemeszterCsoportok } from '../../lib/tananyag';
+
+export const getStaticPaths = (async () => {
+  const csoportok = await szemeszterCsoportok();
+  return csoportok.map((sz, i) => ({
+    params: { szam: String(sz.szam) },
+    props: { sz, elozo: csoportok[i - 1] ?? null, kovetkezo: csoportok[i + 1] ?? null },
+  }));
+}) satisfies GetStaticPaths;
+
+const { sz, elozo, kovetkezo } = Astro.props;
+const oldalCim = `${sz.szam}. szemeszter: ${sz.cim}`;
+const leiras =
+  `${sz.cim} — ${sz.fokusz}. Ajánlott kor: ${sz.korosztaly}. ` +
+  (sz.db > 0 ? `${sz.db} lecke, modulokra bontva.` : 'A szemeszter leckéi készülnek.');
+
+const jsonLd = {
+  '@context': 'https://schema.org',
+  '@type': 'Course',
+  name: oldalCim,
+  description: leiras,
+  inLanguage: 'hu',
+  educationalLevel: sz.korosztaly,
+  provider: { '@type': 'Organization', name: site.nev, url: site.url },
+  ...(sz.db > 0 && {
+    hasPart: sz.modulok.flatMap((m) =>
+      m.leckek.map((l) => ({
+        '@type': 'LearningResource',
+        name: l.data.cim,
+        url: new URL(`/tananyag/${l.id}/`, site.url).href,
+      }))
+    ),
+  }),
+};
+---
+
+<Alap cim={oldalCim} leiras={leiras} jsonLd={jsonLd}>
+  <section class="burok szakasz">
+    <nav class="morzsa" aria-label="Hol vagyok">
+      <a href="/tananyag/">Tananyag</a>
+      <span aria-hidden="true">›</span>
+      <span>{sz.szam}. szemeszter</span>
+    </nav>
+
+    <div class="olvas">
+      <div style="display:flex; gap:.7rem; align-items:center; flex-wrap:wrap">
+        <span class="cimke kiemelt">{sz.szam}. szemeszter</span>
+        <span class="cimke">{sz.korosztaly}</span>
+        <span class="cimke">{sz.db > 0 ? `${sz.db} lecke` : 'készül'}</span>
+      </div>
+      <h1 style="margin-top:1rem">{sz.cim}</h1>
+      <p style="font-size:1.12rem; color:var(--muted)">{sz.fokusz}</p>
+    </div>
+
+    {sz.modulok.length === 0 ? (
+      <p class="keszul">
+        Ez a szemeszter még készül. Az elkészült leckék itt fognak megjelenni.
+      </p>
+    ) : (
+      sz.modulok.map((m) => (
+        <div style="margin-bottom:1.8rem">
+          <h2 class="modul-cim">{m.szam}. modul — {m.cim}</h2>
+          <ol class="lecke-lista">
+            {m.leckek.map((l) => (
+              <li>
+                <a href={`/tananyag/${l.id}/`}>
+                  <span class="lecke-kod szam-jel">{l.data.kod}</span>
+                  <span class="lecke-cim">
+                    {l.data.cim}
+                    {l.data.vitaLecke && <span class="cimke" style="margin-left:.5rem">vita-lecke</span>}
+                  </span>
+                  <span class="lecke-kulcs">{l.data.kulcsuzenet}</span>
+                </a>
+              </li>
+            ))}
+          </ol>
+        </div>
+      ))
+    )}
+
+    <nav class="szemeszter-lepteto" aria-label="Léptetés a szemeszterek között">
+      {elozo ? (
+        <a href={elozo.url} class="kartya">
+          <span class="cimke">← {elozo.szam}. szemeszter</span>
+          <h3 style="margin:.5rem 0 0; font-size:1.02rem">{elozo.cim}</h3>
+        </a>
+      ) : <span></span>}
+      {kovetkezo ? (
+        <a href={kovetkezo.url} class="kartya" style="text-align:right">
+          <span class="cimke">{kovetkezo.szam}. szemeszter →</span>
+          <h3 style="margin:.5rem 0 0; font-size:1.02rem">{kovetkezo.cim}</h3>
+        </a>
+      ) : <span></span>}
+    </nav>
+  </section>
+</Alap>
+
+<style>
+  .morzsa {
+    display: flex; flex-wrap: wrap; gap: .45rem;
+    font-size: .88rem; color: var(--muted); margin-bottom: 1.8rem;
+  }
+  .morzsa a { color: var(--muted); }
+
+  .keszul {
+    margin-top: 2rem;
+    color: var(--muted); font-style: italic;
+    border: 1px dashed var(--border); border-radius: var(--radius); padding: 1.2rem;
+  }
+
+  .modul-cim {
+    margin: 2.4rem 0 .7rem;
+    font-size: 1.05rem; color: var(--muted); font-weight: 650; letter-spacing: 0;
+  }
+
+  .lecke-lista { list-style: none; margin: 0; padding: 0; border-top: 1px solid var(--border); }
+  .lecke-lista li { margin: 0; border-bottom: 1px solid var(--border); }
+  .lecke-lista a {
+    display: grid;
+    gap: .15rem .9rem;
+    padding: .95rem .4rem;
+    text-decoration: none;
+    color: inherit;
+    border-radius: 8px;
+  }
+  .lecke-lista a:hover { background: var(--surface-2); }
+  .lecke-kod { font-size: .78rem; color: var(--muted); letter-spacing: .04em; }
+  .lecke-cim { font-weight: 600; font-size: 1.04rem; }
+  .lecke-kulcs { color: var(--muted); font-size: .93rem; }
+  @media (min-width: 760px) {
+    .lecke-lista a { grid-template-columns: 6.2rem 1fr; align-items: baseline; }
+    .lecke-kod { grid-row: span 2; padding-top: .28rem; }
+  }
+
+  .szemeszter-lepteto {
+    display: grid; gap: 1rem; grid-template-columns: 1fr; margin-top: 3.5rem;
+  }
+  @media (min-width: 680px) {
+    .szemeszter-lepteto { grid-template-columns: 1fr 1fr; }
+  }
+</style>

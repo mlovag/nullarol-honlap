@@ -4,6 +4,7 @@ import { getCollection, render } from 'astro:content';
 import Alap from '../../layouts/Alap.astro';
 import SzuloiKartya from '../../components/SzuloiKartya.astro';
 import { site, szemeszterek } from '../../site.config';
+import { szemeszterUrl } from '../../lib/tananyag';
 
 export const getStaticPaths = (async () => {
   const osszes = await getCollection('leckek');
@@ -40,7 +41,7 @@ const jsonLd = {
     <nav class="morzsa" aria-label="Hol vagyok">
       <a href="/tananyag/">Tananyag</a>
       <span aria-hidden="true">›</span>
-      <a href={`/tananyag/#szemeszter-${d.szemeszter}`}>{d.szemeszter}. szemeszter</a>
+      <a href={szemeszterUrl(d.szemeszter)}>{d.szemeszter}. szemeszter</a>
       <span aria-hidden="true">›</span>
       <span>{d.modulSorszam}. modul — {d.modul}</span>
     </nav>

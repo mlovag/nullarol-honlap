@@ -266,6 +266,8 @@ th { font-weight: 650; background: var(--surface-2); white-space: nowrap; }
   border-radius: 10px;
   font-size: .95rem;
 }
+.fomenu .almenu a[aria-current='page'] { background: var(--accent-bg); }
+.fomenu .almenu a[aria-current='page'] .almenu-cim { color: var(--accent); }
 .almenu-cim { font-weight: 600; display: flex; align-items: center; gap: .5rem; }
 .almenu-leiras { color: var(--muted); font-size: .85rem; font-weight: 450; line-height: 1.4; }
 .almenu-jel {

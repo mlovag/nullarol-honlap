@@ -1,26 +1,10 @@
 ---
-import { getCollection } from 'astro:content';
+/* A Tananyag áttekintő oldala: az öt szemeszter kártyán, mindegyik a saját oldalára visz. */
 import Alap from '../../layouts/Alap.astro';
-import { szemeszterek } from '../../site.config';
+import { szemeszterCsoportok } from '../../lib/tananyag';
 
-const osszes = await getCollection('leckek');
-const leckek = osszes
-  .filter((l) => l.data.statusz === 'megirva')
-  .sort((a, b) => a.data.kod.localeCompare(b.data.kod));
-
-/* szemeszter -> modulok -> leckék */
-const csoportok = szemeszterek.map((sz) => {
-  const sajat = leckek.filter((l) => l.data.szemeszter === sz.szam);
-  const modulok = [...new Set(sajat.map((l) => l.data.modulSorszam))]
-    .sort((a, b) => a - b)
-    .map((msz) => {
-      const benne = sajat
-        .filter((l) => l.data.modulSorszam === msz)
-        .sort((a, b) => a.data.sorszam - b.data.sorszam);
-      return { szam: msz, cim: benne[0]?.data.modul ?? '', leckek: benne };
-    });
-  return { ...sz, modulok, db: sajat.length };
-});
+const csoportok = await szemeszterCsoportok();
+const osszesLecke = csoportok.reduce((n, sz) => n + sz.db, 0);
 ---
 
 <Alap
@@ -30,70 +14,35 @@ const csoportok = szemeszterek.map((sz) => {
     <div class="olvas">
       <h1>Tananyag</h1>
       <p style="font-size:1.12rem; color:var(--muted)">
-        Öt szemeszter, modulokra bontva. Az elérhető leckék címére kattintva
-        megnyílik a teljes szöveg a szülői kártyával együtt.
+        Öt szemeszter, egymásra épülve. Válassz egy szemesztert: a saját oldalán
+        modulokra bontva találod a leckéit, a szülői kártyával együtt.
+        {osszesLecke > 0 && <> Jelenleg {osszesLecke} lecke érhető el.</>}
       </p>
     </div>
 
-    {csoportok.map((sz) => (
-      <section id={`szemeszter-${sz.szam}`} style="margin-top:3.2rem; scroll-margin-top:84px">
-        <div style="display:flex; gap:.7rem; align-items:center; flex-wrap:wrap">
-          <span class="cimke kiemelt">{sz.szam}. szemeszter</span>
-          <span class="cimke">{sz.korosztaly}</span>
-          <span class="cimke">{sz.db > 0 ? `${sz.db} lecke` : 'készül'}</span>
-        </div>
-        <h2 style="margin-top:.8rem">{sz.cim}</h2>
-        <p style="color:var(--muted); max-width:62ch; margin-bottom:1.6rem">{sz.fokusz}</p>
-
-        {sz.modulok.length === 0 ? (
-          <p style="color:var(--muted); font-style:italic; border:1px dashed var(--border); border-radius:var(--radius); padding:1.2rem">
-            Ez a szemeszter még készül. Az elkészült leckék itt fognak megjelenni.
-          </p>
-        ) : (
-          sz.modulok.map((m) => (
-            <div style="margin-bottom:1.8rem">
-              <h3 style="margin:1.4rem 0 .7rem; font-size:1.05rem; color:var(--muted); font-weight:650; letter-spacing:0">
-                {m.szam}. modul — {m.cim}
-              </h3>
-              <ol class="lecke-lista">
-                {m.leckek.map((l) => (
-                  <li>
-                    <a href={`/tananyag/${l.id}/`}>
-                      <span class="lecke-kod szam-jel">{l.data.kod}</span>
-                      <span class="lecke-cim">
-                        {l.data.cim}
-                        {l.data.vitaLecke && <span class="cimke" style="margin-left:.5rem">vita-lecke</span>}
-                      </span>
-                      <span class="lecke-kulcs">{l.data.kulcsuzenet}</span>
-                    </a>
-                  </li>
-                ))}
-              </ol>
-            </div>
-          ))
-        )}
-      </section>
-    ))}
+    <div class="racs" style="margin-top:2rem">
+      {csoportok.map((sz) => (
+        <a class="kartya" id={`szemeszter-${sz.szam}`} href={sz.url}>
+          <div style="display:flex; justify-content:space-between; gap:.6rem; align-items:start">
+            <span class="cimke">{sz.szam}. szemeszter</span>
+            <span class={sz.db > 0 ? 'cimke kiemelt' : 'cimke'}>
+              {sz.db > 0 ? `${sz.db} lecke` : 'készül'}
+            </span>
+          </div>
+          <h2 style="margin:.7rem 0 .35rem; font-size:1.2rem">{sz.cim}</h2>
+          <p>{sz.fokusz}</p>
+          {sz.modulok.length > 0 && (
+            <p style="margin-top:.5rem; font-size:.88rem">{sz.modulok.length} modul</p>
+          )}
+          <p style="margin-top:.5rem; font-size:.88rem">Ajánlott kor: {sz.korosztaly}</p>
+        </a>
+      ))}
+    </div>
   </section>
 </Alap>
 
-<style>
-  .lecke-lista { list-style: none; margin: 0; padding: 0; border-top: 1px solid var(--border); }
-  .lecke-lista li { margin: 0; border-bottom: 1px solid var(--border); }
-  .lecke-lista a {
-    display: grid;
-    gap: .15rem .9rem;
-    padding: .95rem .4rem;
-    text-decoration: none;
-    color: inherit;
-    border-radius: 8px;
-  }
-  .lecke-lista a:hover { background: var(--surface-2); }
-  .lecke-kod { font-size: .78rem; color: var(--muted); letter-spacing: .04em; }
-  .lecke-cim { font-weight: 600; font-size: 1.04rem; }
-  .lecke-kulcs { color: var(--muted); font-size: .93rem; }
-  @media (min-width: 760px) {
-    .lecke-lista a { grid-template-columns: 6.2rem 1fr; align-items: baseline; }
-    .lecke-kod { grid-row: span 2; padding-top: .28rem; }
-  }
-</style>
+<script>
+  /* Régi hivatkozások (/tananyag/#szemeszter-2) → az új, külön szemeszter-oldal */
+  const talalat = location.hash.match(/^#szemeszter-(\d+)$/);
+  if (talalat) location.replace(`/tananyag/${talalat[1]}-szemeszter/`);
+</script>

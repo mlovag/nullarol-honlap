@@ -64,10 +64,10 @@ export const menu: MenuElem[] = [
   {
     cim: 'Tananyag', url: '/tananyag/', leiras: 'A teljes tanterv, leckéről leckére',
     almenu: [
-      { cim: 'A teljes tananyag', url: '/tananyag/', leiras: 'Mind az öt szemeszter egy oldalon' },
+      { cim: 'Áttekintés', url: '/tananyag/', leiras: 'Mind az öt szemeszter egy pillantásra' },
       ...szemeszterek.map((sz) => ({
         cim: `${sz.szam}. szemeszter`,
-        url: `/tananyag/#szemeszter-${sz.szam}`,
+        url: `/tananyag/${sz.szam}-szemeszter/`,   // minden szemeszternek saját oldala van
         leiras: `${sz.cim} · ${sz.korosztaly}`,
         szemeszter: sz.szam,
       })),

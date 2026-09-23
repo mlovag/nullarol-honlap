@@ -2,6 +2,7 @@
 import { getCollection } from 'astro:content';
 import Alap from '../layouts/Alap.astro';
 import { site, szemeszterek } from '../site.config';
+import { szemeszterUrl } from '../lib/tananyag';
 
 const leckek = await getCollection('leckek');
 const kesz = leckek.filter((l) => l.data.statusz === 'megirva');
@@ -47,7 +48,7 @@ const jsonLd = {
         const db = kesz.filter((l) => l.data.szemeszter === sz.szam).length;
         const elerheto = keszSzemeszterek.has(sz.szam);
         return (
-          <a class="kartya" href={elerheto ? `/tananyag/#szemeszter-${sz.szam}` : '/tananyag/'}>
+          <a class="kartya" href={szemeszterUrl(sz.szam)}>
             <div style="display:flex; justify-content:space-between; gap:.6rem; align-items:start">
               <span class="cimke">{sz.szam}. szemeszter</span>
               <span class="cimke" style={elerheto ? 'background:var(--accent-bg); color:var(--accent)' : ''}>

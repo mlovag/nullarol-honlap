@@ -34,7 +34,8 @@ const aktiv = (url: string) =>
             <ul class="almenu" id={`almenu-${i}`}>
               {m.almenu.map((a) => (
                 <li>
-                  <a href={a.url} data-almenu-link>
+                  <a href={a.url} data-almenu-link
+                     aria-current={utvonal === a.url ? 'page' : undefined}>
                     <span class="almenu-cim">
                       {a.cim}
                       {!vanLecke(a.szemeszter) && <span class="almenu-jel">készül</span>}
