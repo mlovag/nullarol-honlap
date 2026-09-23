@@ -1,5 +1,9 @@
+---
+cim: "Előszó"
+leiras: "Miért van ez a honlap, kinek szól, és mi vár itt."
+---
 
-# Miért van ez a honlap?
+## Miért van ez a honlap?
 
 Az egész azzal kezdődött, hogy a gyerekeimet elkezdte érdekelni a befektetések és a pénzügy világa. Így nekiálltunk rendszeresen beszélgetni arról hogyan működik a pénz. Miért annyi valaminek az ára, amennyi? Mit csinál egy bolt a bevételével? Mi az a kamat, és miért nem mindegy? Menet közben jöttem rá, hogy ezekre a kérdésekre az iskolában kevés válasz jut, pedig felnőttként mindenki belefut. Ha nekik hasznos, gondoltam, talán másnak is az lesz.
 

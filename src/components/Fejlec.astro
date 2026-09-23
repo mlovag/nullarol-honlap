@@ -1,6 +1,12 @@
 ---
+import { getCollection } from 'astro:content';
 import { site, menu } from '../site.config';
 const utvonal = Astro.url.pathname;
+
+/* Melyik szemeszterben van már megjelent lecke? (a „készül” jelzéshez) */
+const megjelent = (await getCollection('leckek')).filter((l) => l.data.statusz === 'megirva');
+const vanLecke = (szam?: number) =>
+  szam === undefined || megjelent.some((l) => l.data.szemeszter === szam);
 const aktiv = (url: string) =>
   url === '/' ? utvonal === '/' : utvonal.startsWith(url.replace(/\/$/, ''));
 ---
@@ -13,9 +19,36 @@ const aktiv = (url: string) =>
     </a>
 
     <nav class="fomenu" id="fomenu" aria-label="Főmenü">
-      {menu.map((m) => (
-        <a href={m.url} aria-current={aktiv(m.url) ? 'page' : undefined}>{m.cim}</a>
-      ))}
+      {menu.map((m, i) =>
+        m.almenu?.length ? (
+          <div class="lenyilo" data-lenyilo>
+            <button class="lenyilo-gomb" type="button"
+                    aria-expanded="false" aria-controls={`almenu-${i}`}
+                    aria-current={aktiv(m.url) ? 'page' : undefined}>
+              {m.cim}
+              <svg class="nyil" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                   stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                <path d="M6 9l6 6 6-6"></path>
+              </svg>
+            </button>
+            <ul class="almenu" id={`almenu-${i}`}>
+              {m.almenu.map((a) => (
+                <li>
+                  <a href={a.url} data-almenu-link>
+                    <span class="almenu-cim">
+                      {a.cim}
+                      {!vanLecke(a.szemeszter) && <span class="almenu-jel">készül</span>}
+                    </span>
+                    {a.leiras && <span class="almenu-leiras">{a.leiras}</span>}
+                  </a>
+                </li>
+              ))}
+            </ul>
+          </div>
+        ) : (
+          <a href={m.url} aria-current={aktiv(m.url) ? 'page' : undefined}>{m.cim}</a>
+        )
+      )}
     </nav>
 
     <button class="ikon-gomb" id="tema-gomb" type="button"
@@ -43,6 +76,41 @@ const aktiv = (url: string) =>
   menuGomb?.addEventListener('click', () => {
     const nyitva = fejlec?.classList.toggle('nyitva');
     menuGomb.setAttribute('aria-expanded', nyitva ? 'true' : 'false');
+  });
+
+  /* Lenyíló menük: kattintásra nyílnak (PC-n egérrel rámutatva is),
+     Esc-re és kívülre kattintásra bezárulnak. */
+  const lenyilok = Array.from(document.querySelectorAll<HTMLElement>('[data-lenyilo]'));
+  const bezar = (kiveve?: HTMLElement) => lenyilok.forEach((l) => {
+    if (l === kiveve) return;
+    l.classList.remove('nyitva');
+    l.querySelector('.lenyilo-gomb')?.setAttribute('aria-expanded', 'false');
+  });
+  lenyilok.forEach((l) => {
+    const gomb = l.querySelector<HTMLButtonElement>('.lenyilo-gomb');
+    gomb?.addEventListener('click', (e) => {
+      e.stopPropagation();
+      const nyitva = l.classList.toggle('nyitva');
+      gomb.setAttribute('aria-expanded', nyitva ? 'true' : 'false');
+      bezar(l);
+    });
+    l.querySelectorAll('[data-almenu-link]').forEach((a) =>
+      a.addEventListener('click', () => {
+        bezar();
+        fejlec?.classList.remove('nyitva');
+        menuGomb?.setAttribute('aria-expanded', 'false');
+      })
+    );
+  });
+  document.addEventListener('click', (e) => {
+    if (!(e.target as HTMLElement).closest('[data-lenyilo]')) bezar();
+  });
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape') {
+      const nyitott = lenyilok.find((l) => l.classList.contains('nyitva'));
+      bezar();
+      nyitott?.querySelector<HTMLButtonElement>('.lenyilo-gomb')?.focus();
+    }
   });
 
   const temaGomb = document.getElementById('tema-gomb');

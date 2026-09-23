@@ -14,30 +14,8 @@ export const site = {
   youtube: '',          // pl. 'https://youtube.com/@nullarol' — ha üres, nem jelenik meg
 };
 
-/* ------------------------------------------------------------
-   A MENÜ
-   ------------------------------------------------------------
-   ÚJ MENÜPONT HOZZÁADÁSA = egyetlen új sor ebbe a listába.
-
-   Például egy új "Befektetés" menüpont:
-     { cim: 'Befektetés', url: '/befektetes/' },
-   ...és mellé egy új fájl ide: src/content/oldalak/befektetes.md
-
-   A sorrend itt felülről lefelé = a menü sorrendje balról jobbra.
------------------------------------------------------------- */
-
-export type MenuElem = {
-  cim: string;
-  url: string;
-  leiras?: string;
-};
-
-export const menu: MenuElem[] = [
-  { cim: 'Előszó',   url: '/eloszo/',   leiras: 'Miről szól ez az oldal, és kinek készült' },
-  { cim: 'Tananyag', url: '/tananyag/', leiras: 'A teljes tanterv, leckéről leckére' },
-];
-
-/* A szemeszterek neve és leírása. Új szemeszter = új sor. */
+/* A szemeszterek neve és leírása. Új szemeszter = új sor.
+   (A Tananyag lenyíló menüje automatikusan ebből a listából épül.) */
 export const szemeszterek = [
   { szam: 1, cim: 'Mikroökonómia és a vállalat működése', korosztaly: '14–15 év',
     fokusz: 'Döntés, piac, ár, egy cég belülről' },
@@ -49,4 +27,50 @@ export const szemeszterek = [
     fokusz: 'Ötlettől a működő cégig, magyar keretek' },
   { szam: 5, cim: 'Tőkepiacok és befektetés mélységben', korosztaly: '18+',
     fokusz: 'Beszámolóolvasás, értékelés, portfólió' },
+];
+
+/* ------------------------------------------------------------
+   A MENÜ
+   ------------------------------------------------------------
+   ÚJ MENÜPONT HOZZÁADÁSA = egyetlen új sor ebbe a listába.
+
+   Például egy új "Befektetés" menüpont:
+     { cim: 'Befektetés', url: '/befektetes/' },
+   ...és mellé egy új fájl ide: src/content/oldalak/befektetes.md
+
+   LENYÍLÓ MENÜPONT: adj a sorhoz egy `almenu` listát
+   (lásd a Tananyag sort lent). Ha van almenü, a menüpont
+   lenyílik, az almenü elemei pedig közvetlen linkek.
+
+   A sorrend itt felülről lefelé = a menü sorrendje balról jobbra.
+------------------------------------------------------------ */
+
+export type AlmenuElem = {
+  cim: string;
+  url: string;
+  leiras?: string;
+  szemeszter?: number;   // ha meg van adva, a menü jelzi, ha az a szemeszter még készül
+};
+
+export type MenuElem = {
+  cim: string;
+  url: string;
+  leiras?: string;
+  almenu?: AlmenuElem[];
+};
+
+export const menu: MenuElem[] = [
+  { cim: 'Előszó',   url: '/eloszo/',   leiras: 'Miről szól ez az oldal, és kinek készült' },
+  {
+    cim: 'Tananyag', url: '/tananyag/', leiras: 'A teljes tanterv, leckéről leckére',
+    almenu: [
+      { cim: 'A teljes tananyag', url: '/tananyag/', leiras: 'Mind az öt szemeszter egy oldalon' },
+      ...szemeszterek.map((sz) => ({
+        cim: `${sz.szam}. szemeszter`,
+        url: `/tananyag/#szemeszter-${sz.szam}`,
+        leiras: `${sz.cim} · ${sz.korosztaly}`,
+        szemeszter: sz.szam,
+      })),
+    ],
+  },
 ];

@@ -1,0 +1,76 @@
+# Pages CMS beállítás — ez adja a böngészős szerkesztőfelületet.
+# https://pagescms.org
+
+media:
+  input: public/kepek
+  output: /kepek
+
+content:
+  - name: leckek
+    label: Leckék
+    type: collection
+    path: src/content/leckek
+    filename: '{fields.cim}.md'
+    view:
+      fields: [cim, kod, szemeszter, statusz]
+      sort: [kod, cim]
+      primary: cim
+    fields:
+      - { name: cim, label: Cím, type: string, required: true }
+      - { name: kod, label: Kód (pl. S1-M2-03), type: string, required: true }
+      - { name: szemeszter, label: Szemeszter, type: number, required: true }
+      - { name: modul, label: Modul neve, type: string, required: true }
+      - { name: modulSorszam, label: Modul sorszáma, type: number, required: true }
+      - { name: sorszam, label: Sorszám a modulon belül, type: number, required: true }
+      - { name: hossz, label: Hossz (perc), type: number, default: 30 }
+      - { name: vitaLecke, label: Vita-lecke?, type: boolean, default: false }
+      - name: statusz
+        label: Státusz
+        type: select
+        default: megirva
+        options:
+          values:
+            - { value: megirva, label: "Megírva — megjelenik a honlapon" }
+            - { value: vazlat, label: "Vázlat — NEM jelenik meg" }
+            - { value: tervezett, label: "Tervezett — NEM jelenik meg" }
+      - { name: kulcsuzenet, label: Kulcsüzenet, type: text, required: true }
+      - { name: valosEset, label: Valós eset (rövid), type: text }
+      - { name: hetiMegfigyeles, label: Heti megfigyelés (rövid), type: text }
+      - name: szuloiKartya
+        label: Szülői kártya
+        type: object
+        fields:
+          - { name: mitViszHaza, label: Mit visz haza, type: text }
+          - { name: elofeltetel, label: Előfeltétel, type: text }
+          - { name: felreertes, label: Tipikus félreértés, type: text }
+          - { name: amitNeMondj, label: Amit ne mondj, type: text }
+          - { name: aSzamokrol, label: A számokról, type: text }
+          - { name: amireKeszulj, label: Amire készülj, type: text }
+      - name: fogalmak
+        label: Fogalomtár
+        type: object
+        list: true
+        fields:
+          - { name: hu, label: Magyarul, type: string }
+          - { name: en, label: Angolul, type: string }
+          - { name: mit, label: Egy mondatban, type: text }
+      - { name: body, label: A lecke szövege, type: rich-text }
+
+  - name: oldalak
+    label: Oldalak (Előszó és társai)
+    type: collection
+    path: src/content/oldalak
+    filename: '{fields.cim}.md'
+    view:
+      fields: [cim, leiras]
+      primary: cim
+    fields:
+      - { name: cim, label: Cím, type: string, required: true }
+      - { name: leiras, label: Rövid leírás (a keresőnek is), type: text }
+      - { name: body, label: Az oldal szövege, type: rich-text }
+
+  - name: menu
+    label: Menü és alapbeállítások
+    type: file
+    path: src/site.config.ts
+    format: code
