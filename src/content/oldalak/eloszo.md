@@ -1,7 +1,3 @@
----
-cim: "Előszó"
-leiras: "Miért készült ez a tananyag, kinek szól, és hogyan érdemes használni."
----
 
 # Miért van ez a honlap?
 
@@ -14,7 +10,7 @@ Kardos Norbert vagyok, okleveles közgazdász.
 A tananyag szemeszterekre van/lesz bontva, mint egy rendes képzés:
 
 - **1. szemeszter: mikroökonómia.** Innen indulunk, mert ez a gazdaság legkisebb építőkockája: hogyan döntenek az emberek és a cégek, és mi mozgatja az egészet a legalján.
-- **2. szemeszter: makroökonómia:** a nagy kép, vagyis infláció, kamat, forint.
+- **2. szemeszter: makroökonómia.** A nagy kép, vagyis infláció, kamat, forint.
 - **3. szemeszter: a befektetés alapjai.**
 - **Később egy külön rész felnőtteknek**, befektetésről.
 
