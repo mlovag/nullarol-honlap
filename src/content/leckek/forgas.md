@@ -11,7 +11,7 @@ statusz: "megirva"
 kulcsuzenet: "Kevés haszon sokszor többet hoz, mint sok haszon egyszer."
 valosEset: "Egy diszkont és egy ékszerbolt: az egyik napontól napig cseréli a készletét, a másik hónapokig őrzi ugyanazt a gyűrűt."
 hetiMegfigyeles: >-
-  Találgassátok, egy pekárságban hányszor cserélődik ki napi szinten az áru.
+  Találgassátok, egy pékségben hányszor cserélődik ki napi szinten az áru.
 szuloiKartya:
   mitViszHaza: >-
     hogy egy üzlet jóságát **nem lehet egyetlen százalékból megítélni.** Két szám
