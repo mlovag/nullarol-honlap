@@ -245,7 +245,7 @@ Ezzel a hat leckével kész a harmadik modul. Ha az első modul a döntésekhez 
 5. **Hányszor fordul meg egy év alatt ugyanaz a pénz?**
 6. **Mit ad a méret — és hol kezd ártani?**
 
-Ez a hat kérdés bármelyik cégre ráhúzható: egy zöldségesre, egy pizzériára, egy focicsapatra vagy egy tőzsdei óriásra. **Az 5. szemeszterben pontosan ezekkel a kérdésekkel fogtok igazi éves beszámolókat olvasni.**
+Ez a hat kérdés bármelyik cégre ráhúzható: egy zöldségesre, egy pizzériára, egy focicsapatra vagy egy tőzsdei óriásra. **A 4. szemeszterben pontosan ezekkel a kérdésekkel fogtok igazi éves beszámolókat olvasni.**
 
 ## Beszélgetésindítók
 

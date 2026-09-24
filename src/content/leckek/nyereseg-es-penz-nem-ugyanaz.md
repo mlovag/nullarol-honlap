@@ -226,7 +226,7 @@ Mondd ki nekik ezt, mert ez a lecke tanulsága felnőtt szinten:
 
 > **A nyereséget lehet szépíteni. A pénzt nem. Ezért néz meg minden komoly elemző mindig kettőt: a nyereséget ÉS a pénzáramlást.**
 
-*(Ez pontosan az, amit a modul végén, „A három kimutatás" leckében fogtok megtanulni — és ami az 5. szemeszter egész anyagát megalapozza.)*
+*(Ez pontosan az, amit a modul végén, „A három kimutatás" leckében fogtok megtanulni — és ami a 4. szemeszter egész anyagát megalapozza.)*
 
 **És egy figyelmeztetés a szülőnek, amit érdemes a gyerekeknek is elmondani:** az interneten sokszor lehet olvasni, hogy „a kisvállalkozások 82 százaléka pénzáramlási probléma miatt megy csődbe". **Ez a szám bizonytalan eredetű** — sokan idézik, de nem található mögötte megbízható kutatás. Jobb így fogalmazni: **a pénzhiány a kisvállalkozások megszűnésének egyik leggyakoribb közvetlen oka.** Ennyi biztosan igaz, és ennyi bőven elég.
 

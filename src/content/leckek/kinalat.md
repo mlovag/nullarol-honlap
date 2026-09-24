@@ -214,7 +214,7 @@ Vezesd végig őket ezeken:
 
 **Aki a harmadikat:** ez a legokosabb gondolat a szobában, és érdemes kimondani, miért. Ferenc bácsi itt nem az árat próbálja kitalálni, hanem **azt, hogy mit fognak csinálni a többiek.** Ez már egy szinttel magasabb gondolkodás. Kockázat: ha mindenki így okoskodik, akkor megint fordítva sül el.
 
-**Aki a negyediket:** ez a legérettebb válasz. Ferenc bácsi itt nem próbálja megnyerni a játékot — hanem **kiszáll belőle**. Lemond a nagy nyereség lehetőségéről, cserébe megveszi a biztonságot. Ezt csinálja a világon minden komoly termelő, és ennek az eszköznek van neve is, amit majd az 5. szemeszterben tanultok meg: **határidős szerződés**.
+**Aki a negyediket:** ez a legérettebb válasz. Ferenc bácsi itt nem próbálja megnyerni a játékot — hanem **kiszáll belőle**. Lemond a nagy nyereség lehetőségéről, cserébe megveszi a biztonságot. Ezt csinálja a világon minden komoly termelő, és ennek az eszköznek van neve is, amit majd a 4. szemeszterben tanultok meg: **határidős szerződés**.
 
 És a záró kérdés:
 

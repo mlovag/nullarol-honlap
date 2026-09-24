@@ -11,7 +11,7 @@ statusz: "megirva"
 kulcsuzenet: "Minden cégről három történet szól: mi történt, mink van, és hol a pénz."
 valosEset: >-
   Egy valós magyar tőzsdei cég éves beszámolójának három lapja, egy-egy mondatban
-  összefoglalva — előkészítés az 5. szemeszterre.
+  összefoglalva — előkészítés a 4. szemeszterre.
 hetiMegfigyeles: >-
   Fogalmazzátok meg három mondatban a család pénzügyeit ugyanezen három kérdés
   szerint.
@@ -34,7 +34,7 @@ szuloiKartya:
     tudjanak beszámolót készíteni, hanem hogy tudjanak kérdezni egyet.
   amireKeszulj: >-
     Ez a szemeszter utolsó előtti leckéje, és az egyetlen, ami előrenéz: itt
-    kezdődik az, ami majd az 5. szemeszter egésze lesz.
+    kezdődik az, ami majd a 4. szemeszter egésze lesz.
 fogalmak:
   - hu: "Eredménykimutatás"
     en: "income statement"
