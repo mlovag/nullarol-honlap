@@ -7,7 +7,7 @@ export const site = {
   alcim: 'Közgazdaságtan és pénzügyek — érthetően',
   leiras:
     'Ingyenes, magyar nyelvű közgazdaságtan- és pénzügyi tananyag tizenéveseknek, ' +
-    'szülőknek és tanároknak. Öt szemeszter, leckéről leckére, valós példákkal.',
+    'szülőknek és tanároknak. Négy szemeszter, leckéről leckére, valós példákkal.',
   url: 'https://www.nullarol.hu',
   nyelv: 'hu',
   email: '',            // ha ide beírsz egy címet, megjelenik a lábléc kapcsolat sorában
@@ -23,9 +23,7 @@ export const szemeszterek = [
     fokusz: 'GDP, infláció, MNB, állam, forint, EU' },
   { szam: 3, cim: 'Személyes pénzügyek, hitel, befektetés', korosztaly: '17–18 év',
     fokusz: 'Költségvetés, bank, hitel, befektetés, kockázat' },
-  { szam: 4, cim: 'Vállalkozásindítás a gyakorlatban', korosztaly: '18+',
-    fokusz: 'Ötlettől a működő cégig, magyar keretek' },
-  { szam: 5, cim: 'Tőkepiacok és befektetés mélységben', korosztaly: '18+',
+  { szam: 4, cim: 'Tőkepiacok és befektetés mélységben', korosztaly: '18+',
     fokusz: 'Beszámolóolvasás, értékelés, portfólió' },
 ];
 
@@ -64,7 +62,7 @@ export const menu: MenuElem[] = [
   {
     cim: 'Tananyag', url: '/tananyag/', leiras: 'A teljes tanterv, leckéről leckére',
     almenu: [
-      { cim: 'Áttekintés', url: '/tananyag/', leiras: 'Mind az öt szemeszter egy pillantásra' },
+      { cim: 'Áttekintés', url: '/tananyag/', leiras: 'Mind a négy szemeszter egy pillantásra' },
       ...szemeszterek.map((sz) => ({
         cim: `${sz.szam}. szemeszter`,
         url: `/tananyag/${sz.szam}-szemeszter/`,   // minden szemeszternek saját oldala van

@@ -1,5 +1,5 @@
 ---
-/* A Tananyag áttekintő oldala: az öt szemeszter kártyán, mindegyik a saját oldalára visz. */
+/* A Tananyag áttekintő oldala: a négy szemeszter kártyán, mindegyik a saját oldalára visz. */
 import Alap from '../../layouts/Alap.astro';
 import { szemeszterCsoportok } from '../../lib/tananyag';
 
@@ -9,12 +9,12 @@ const osszesLecke = csoportok.reduce((n, sz) => n + sz.db, 0);
 
 <Alap
   cim="Tananyag"
-  leiras="A teljes közgazdaságtan- és pénzügyi tanterv: öt szemeszter, modulokra és leckékre bontva. Minden lecke harminc perc.">
+  leiras="A teljes közgazdaságtan- és pénzügyi tanterv: négy szemeszter, modulokra és leckékre bontva. Minden lecke harminc perc.">
   <section class="burok szakasz">
     <div class="olvas">
       <h1>Tananyag</h1>
       <p style="font-size:1.12rem; color:var(--muted)">
-        Öt szemeszter, egymásra épülve. Válassz egy szemesztert: a saját oldalán
+        Négy szemeszter, egymásra épülve. Válassz egy szemesztert: a saját oldalán
         modulokra bontva találod a leckéit, a szülői kártyával együtt.
         {osszesLecke > 0 && <> Jelenleg {osszesLecke} lecke érhető el.</>}
       </p>
